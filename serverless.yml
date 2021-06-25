@@ -1,0 +1,35 @@
+service:
+  name: serverless-sample
+
+plugins:
+ - serverless-webpack
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  settings: 
+    dev:
+      STAGE: ${self:custom.stage}
+    prod:
+      STAGE: ${self:custom.stage}
+    qa:
+      STAGE: ${self:custom.stage}
+ 
+provider:
+  name: aws
+  stage: dev
+  environment: ${self:custom.settings.${self:custom.stage}}
+  runtime: nodejs14.x
+  region: eu-west-1
+  memorySize: 256
+  timeout: 30
+  iam:
+    role:
+      name: serverless-sample-lambda-role-${self:custom.stage}
+
+functions:
+  sample:
+    handler: src/index.handler
+    events:
+      - http:
+          method: post
+          path: sample

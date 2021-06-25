@@ -1,0 +1,19 @@
+#  Template NodeJS build
+
+#  This template allows you to validate your NodeJS code.
+#  The workflow allows running tests and code linting on the default branch.
+
+image: node:14.17.0-alpine3.13
+
+pipelines:
+  default:
+    - parallel:
+        - step:
+            name: Build and Test
+            caches:
+              - node
+            script:
+              - apk update && apk --no-cache --update add python3 build-base 
+              - npm install -g serverless
+              - npm install
+              - sls deploy -v
